@@ -170,7 +170,7 @@ const App = () => {
         <p>
           Projet disponible sur{' '}
           <a
-            href="https://github.com/votre-nom-utilisateur/votre-repo"
+            href="https://github.com/SIGATNguyen/OFTech"
             target="_blank"
             rel="noopener noreferrer"
             className="github-link"
