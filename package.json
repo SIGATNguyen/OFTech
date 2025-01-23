@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/leaflet": "^1.9.16",
+    "assert": "^2.1.0",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
+    "leaflet": "^1.9.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0",
     "react-scripts": "5.0.1",
+    "shp-write": "^0.3.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -35,4 +40,3 @@
     ]
   }
 }
-

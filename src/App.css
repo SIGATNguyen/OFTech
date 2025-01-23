@@ -119,3 +119,15 @@ input[type="text"] {
 .download-button:hover {
   background-color: #d4aa00;
 }
+/* Style pour le conteneur du logo */
+.logo-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+/* Style pour le logo */
+.logo {
+  height: 200px; /* Ajuste la hauteur si nécessaire */
+  width: auto; /* Garde les proportions du logo */
+}

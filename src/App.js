@@ -13,9 +13,13 @@ const App = () => {
       const data = {
         Départements: ['Gironde', 'Loire-Atlantique', 'Morbihan'],
         Communes: ['Nantes', 'Rennes', 'Vannes'],
-        Epcis: ['Métropole de Rennes', 'EPCI Loire', 'EPCI Gironde']
+        Epcis: ['Métropole de Rennes', 'EPCI Loire', 'EPCI Gironde'],
       };
-      setSuggestions(data[territory].filter((item) => item.toLowerCase().includes(query.toLowerCase())));
+      setSuggestions(
+        data[territory].filter((item) =>
+          item.toLowerCase().includes(query.toLowerCase())
+        )
+      );
     } else {
       setSuggestions([]);
     }
@@ -60,6 +64,12 @@ const App = () => {
 
   return (
     <div className="container">
+      {/* Ajout du logo en haut à gauche */}
+      <div className="logo-container">
+        <img src="/LogoSIG.svg" alt="Logo de la promotion" className="logo" />
+      </div>
+
+      {/* Titre principal */}
       <h1>SIGAT OFTech</h1>
       <div className="subtitle">Sélectionner une limite administrative</div>
 
@@ -102,7 +112,7 @@ const App = () => {
         </div>
       </div>
 
-      {/* Section de recherche (affichée seulement après avoir sélectionné un territoire) */}
+      {/* Section de recherche */}
       {territory && (
         <>
           <div className="section">
@@ -127,8 +137,10 @@ const App = () => {
                   </li>
                 ))}
               </ul>
-            ) : query && (
-              <div className="no-suggestions">Aucune suggestion trouvée</div>
+            ) : (
+              query && (
+                <div className="no-suggestions">Aucune suggestion trouvée</div>
+              )
             )}
           </div>
 
