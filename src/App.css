@@ -3,7 +3,7 @@
 
 /* Style global */
 body {
-  font-family: 'Roboto', Arial, sans-serif; /* Utilisation de Roboto */
+  font-family: 'Roboto', Arial, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
@@ -16,16 +16,25 @@ body {
   text-align: center;
 }
 
+.logo-container {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 180px; /* Taille du logo */
+}
+
 h1 {
   font-size: 3rem;
-  font-weight: 700; /* Roboto gras */
+  font-weight: 700;
   color: #343a40;
   margin-bottom: 10px;
 }
 
 .subtitle {
   font-size: 1.5rem;
-  font-weight: 400; /* Roboto normal */
+  font-weight: 400;
   color: #6c757d;
   margin-bottom: 30px;
 }
@@ -47,7 +56,7 @@ button {
   border: 2px solid #ffcc00;
   background-color: white;
   color: #343a40;
-  font-weight: 700; /* Roboto gras */
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -63,10 +72,9 @@ button.active {
   border: none;
 }
 
-input[type="text"] {
+input[type='text'] {
   width: 80%;
   font-size: 1.5rem;
-  font-family: 'Roboto', Arial, sans-serif;
   padding: 15px;
   border: 2px solid #ccc;
   border-radius: 8px;
@@ -88,7 +96,6 @@ input[type="text"] {
 .suggestions-list li {
   padding: 15px 20px;
   font-size: 1.2rem;
-  font-family: 'Roboto', Arial, sans-serif;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -101,7 +108,6 @@ input[type="text"] {
   margin-top: 10px;
   font-size: 1.2rem;
   color: #888;
-  font-family: 'Roboto', Arial, sans-serif;
 }
 
 .download-button {
@@ -119,63 +125,23 @@ input[type="text"] {
 .download-button:hover {
   background-color: #d4aa00;
 }
-/* Style pour le conteneur du logo */
-.logo-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+/* Ajout des styles pour une meilleure compatibilité */
+.suggestions-list {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
 }
 
-/* Style pour le logo */
-.logo {
-  height: 200px; /* Ajuste la hauteur si nécessaire */
-  width: auto; /* Garde les proportions du logo */
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
 }
 
-
-/* Styles globaux pour la responsivité */
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
-    text-align: center;
-  }
-
-  h1 {
-    font-size: 2rem; /* Réduire la taille du titre */
-  }
-
-  .subtitle {
-    font-size: 1.2rem; /* Réduire la taille du sous-titre */
-  }
-
-  .buttons-group {
-    flex-direction: column; /* Empiler les boutons verticalement */
-    gap: 10px; /* Réduire l'espacement */
-  }
-
-  button {
-    font-size: 1rem; /* Réduire la taille du texte des boutons */
-    padding: 10px 20px; /* Réduire les dimensions des boutons */
-  }
-
-  input[type="text"] {
-    width: 100%; /* Prendre toute la largeur disponible */
-    font-size: 1rem; /* Réduire la taille de la police */
-    padding: 10px;
-  }
-
-  .suggestions-list {
-    font-size: 1rem; /* Adapter la taille des suggestions */
-    padding: 5px;
-  }
-
-  .download-button {
-    font-size: 1.2rem; /* Ajuster la taille du bouton */
-    padding: 10px 20px;
-  }
-
-  .logo-container img {
-    width: 50px; /* Ajuster la taille du logo */
-    height: auto;
-  }
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
 }
