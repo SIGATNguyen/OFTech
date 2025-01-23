@@ -145,3 +145,39 @@ input[type='text'] {
 .suggestions-list li:hover {
   background-color: #f0f0f0;
 }
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .buttons-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  input[type="text"] {
+    width: 90%;
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .download-button {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  .logo {
+    width: 80px; /* Réduit la taille du logo sur mobile */
+  }
+}
