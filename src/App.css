@@ -131,3 +131,51 @@ input[type="text"] {
   height: 200px; /* Ajuste la hauteur si nécessaire */
   width: auto; /* Garde les proportions du logo */
 }
+
+
+/* Styles globaux pour la responsivité */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 2rem; /* Réduire la taille du titre */
+  }
+
+  .subtitle {
+    font-size: 1.2rem; /* Réduire la taille du sous-titre */
+  }
+
+  .buttons-group {
+    flex-direction: column; /* Empiler les boutons verticalement */
+    gap: 10px; /* Réduire l'espacement */
+  }
+
+  button {
+    font-size: 1rem; /* Réduire la taille du texte des boutons */
+    padding: 10px 20px; /* Réduire les dimensions des boutons */
+  }
+
+  input[type="text"] {
+    width: 100%; /* Prendre toute la largeur disponible */
+    font-size: 1rem; /* Réduire la taille de la police */
+    padding: 10px;
+  }
+
+  .suggestions-list {
+    font-size: 1rem; /* Adapter la taille des suggestions */
+    padding: 5px;
+  }
+
+  .download-button {
+    font-size: 1.2rem; /* Ajuster la taille du bouton */
+    padding: 10px 20px;
+  }
+
+  .logo-container img {
+    width: 50px; /* Ajuster la taille du logo */
+    height: auto;
+  }
+}
