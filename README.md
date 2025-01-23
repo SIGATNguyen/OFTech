@@ -9,6 +9,7 @@ SIGAT OFTech est un projet visant à fournir un outil simple et efficace pour ac
 
 ⚠ **Limitation :**  
 Les contours géographiques pour les départements ne sont pas disponibles via l'API utilisée. Cette fonctionnalité est donc indisponible pour les départements.
+Idem pour la région
 
 ...
 
