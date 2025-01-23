@@ -1,0 +1,121 @@
+/* Import de la police Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Style global */
+body {
+  font-family: 'Roboto', Arial, sans-serif; /* Utilisation de Roboto */
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 700; /* Roboto gras */
+  color: #343a40;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  font-weight: 400; /* Roboto normal */
+  color: #6c757d;
+  margin-bottom: 30px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.buttons-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 15px 30px;
+  border-radius: 8px;
+  border: 2px solid #ffcc00;
+  background-color: white;
+  color: #343a40;
+  font-weight: 700; /* Roboto gras */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #ffcc00;
+  color: white;
+}
+
+button.active {
+  background-color: #d21e1e;
+  color: white;
+  border: none;
+}
+
+input[type="text"] {
+  width: 80%;
+  font-size: 1.5rem;
+  font-family: 'Roboto', Arial, sans-serif;
+  padding: 15px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.suggestions-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  text-align: left;
+}
+
+.suggestions-list li {
+  padding: 15px 20px;
+  font-size: 1.2rem;
+  font-family: 'Roboto', Arial, sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.no-suggestions {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #888;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.download-button {
+  font-size: 1.5rem;
+  padding: 15px 30px;
+  background-color: #ffcc00;
+  color: #343a40;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+  background-color: #d4aa00;
+}
