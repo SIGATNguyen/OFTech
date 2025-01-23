@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
 const App = () => {
-  const [territory, setTerritory] = useState(null); // Par défaut, aucun territoire sélectionné
-  const [query, setQuery] = useState('');
+  const [territory, setTerritory] = useState(null);
+  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [geojsonData, setGeojsonData] = useState(null);
 
-  // Correspondance entre le territoire sélectionné et l'API
   const apiMapping = {
-    Départements: 'departements',
-    Communes: 'communes',
-    Epcis: 'epcis',
+    Communes: "communes",
+    Epcis: "epcis",
   };
 
   useEffect(() => {
-    // Si une recherche est saisie et un territoire est sélectionné
     if (query && territory) {
       const fetchSuggestions = async () => {
         try {
@@ -25,7 +24,7 @@ const App = () => {
           const data = await response.json();
           setSuggestions(data);
         } catch (error) {
-          console.error('Erreur lors de la récupération des suggestions:', error);
+          console.error("Erreur lors de la récupération des suggestions:", error);
         }
       };
 
@@ -35,75 +34,62 @@ const App = () => {
     }
   }, [query, territory]);
 
-  const handleDownload = async () => {
+  const handleValidate = async () => {
     if (selected && territory) {
       try {
-        // URL API spécifique pour chaque territoire
         const apiUrl = `https://geo.api.gouv.fr/${apiMapping[territory]}/${
           selected.code
-        }?format=geojson${
-          territory === 'Départements' ? '&geometry=contour' : '&geometry=contour'
-        }`;
+        }?format=geojson&geometry=contour`;
 
         const response = await fetch(apiUrl);
         const geojson = await response.json();
-
-        // Convertir l'objet en chaîne JSON
-        const data = JSON.stringify(geojson, null, 2);
-
-        // Créer un blob et un lien de téléchargement
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute(
-          'download',
-          `${selected.nom.replace(/\s+/g, '_')}_${territory}.geojson`
-        );
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
+        setGeojsonData(geojson);
+        setIsModalOpen(true);
       } catch (error) {
         alert(
-          'Erreur lors du téléchargement des données. Veuillez vérifier votre sélection.'
+          "Erreur lors de la récupération des données. Veuillez vérifier votre sélection."
         );
         console.error(error);
       }
     } else {
-      alert('Veuillez sélectionner une suggestion avant de télécharger.');
+      alert("Veuillez sélectionner une suggestion avant de valider.");
+    }
+  };
+
+  const handleDownload = () => {
+    if (geojsonData) {
+      const data = JSON.stringify(geojsonData, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute(
+        "download",
+        `${selected.nom.replace(/\s+/g, "_")}_${territory}.geojson`
+      );
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+
+      // Fermer le pop-up après le téléchargement
+      setIsModalOpen(false);
     }
   };
 
   return (
     <div className="container">
-      {/* Ajout du logo */}
       <div className="logo-container">
         <img src="/LogoSIG.svg" alt="Logo de la promotion" className="logo" />
       </div>
-
-      {/* Titre principal */}
       <h1>SIGAT OFTech</h1>
       <div className="subtitle">Sélectionner une limite administrative</div>
-
-      {/* Section de sélection des territoires */}
       <div className="section">
         <div className="buttons-group">
           <button
-            className={territory === 'Départements' ? 'active' : ''}
+            className={territory === "Communes" ? "active" : ""}
             onClick={() => {
-              setTerritory('Départements');
-              setQuery('');
-              setSuggestions([]);
-              setSelected(null);
-            }}
-          >
-            Départements
-          </button>
-          <button
-            className={territory === 'Communes' ? 'active' : ''}
-            onClick={() => {
-              setTerritory('Communes');
-              setQuery('');
+              setTerritory("Communes");
+              setQuery("");
               setSuggestions([]);
               setSelected(null);
             }}
@@ -111,10 +97,10 @@ const App = () => {
             Communes
           </button>
           <button
-            className={territory === 'Epcis' ? 'active' : ''}
+            className={territory === "Epcis" ? "active" : ""}
             onClick={() => {
-              setTerritory('Epcis');
-              setQuery('');
+              setTerritory("Epcis");
+              setQuery("");
               setSuggestions([]);
               setSelected(null);
             }}
@@ -123,8 +109,6 @@ const App = () => {
           </button>
         </div>
       </div>
-
-      {/* Section de recherche */}
       {territory && (
         <>
           <div className="section">
@@ -138,11 +122,11 @@ const App = () => {
               <ul className="suggestions-list">
                 {suggestions.map((item) => (
                   <li
-                    key={item.code} // Chaque suggestion doit avoir un identifiant unique
+                    key={item.code}
                     onClick={() => {
-                      setSelected(item); // Définit la sélection quand on clique
-                      setQuery(item.nom); // Met à jour le champ de recherche avec la valeur sélectionnée
-                      setSuggestions([]); // Vide les suggestions après sélection
+                      setSelected(item);
+                      setQuery(item.nom);
+                      setSuggestions([]);
                     }}
                   >
                     {item.nom}
@@ -150,25 +134,37 @@ const App = () => {
                 ))}
               </ul>
             ) : (
-              query && (
-                <div className="no-suggestions">Aucune suggestion trouvée</div>
-              )
+              query && <div className="no-suggestions">Aucune suggestion trouvée</div>
             )}
           </div>
-
-          {/* Bouton de téléchargement */}
           <div className="section">
-            <button className="download-button" onClick={handleDownload}>
-              Télécharger
+            <button className="validate-button" onClick={handleValidate}>
+              Valider
             </button>
           </div>
         </>
       )}
-
-      {/* Footer avec le lien vers GitHub */}
+      {isModalOpen && geojsonData && (
+        <div className="overlay">
+          <div className="modal">
+            <h3>Données GeoJSON :</h3>
+            <pre className="geojson-data">
+              {JSON.stringify(geojsonData, null, 2)}
+            </pre>
+            <div className="modal-buttons">
+              <button className="close-button" onClick={() => setIsModalOpen(false)}>
+                Fermer
+              </button>
+              <button className="download-button" onClick={handleDownload}>
+                Télécharger
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <footer className="footer">
         <p>
-          Projet disponible sur{' '}
+          Projet disponible sur{" "}
           <a
             href="https://github.com/SIGATNguyen/OFTech"
             target="_blank"

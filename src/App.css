@@ -22,7 +22,7 @@ body {
 }
 
 .logo {
-  width: 180px; /* Taille du logo */
+  width: 180px;
 }
 
 h1 {
@@ -110,7 +110,7 @@ input[type='text'] {
   color: #888;
 }
 
-.download-button {
+.validate-button {
   font-size: 1.5rem;
   padding: 15px 30px;
   background-color: #ffcc00;
@@ -122,80 +122,89 @@ input[type='text'] {
   transition: background-color 0.3s ease;
 }
 
-.download-button:hover {
+.validate-button:hover {
   background-color: #d4aa00;
 }
-/* Ajout des styles pour une meilleure compatibilité */
-.suggestions-list {
-  list-style: none;
-  margin: 10px 0;
-  padding: 0;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: white;
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  text-align: center;
 }
 
-.suggestions-list li {
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.geojson-data {
+  background: #f8f9fa;
   padding: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.close-button,
+.download-button {
+  width: 120px;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.suggestions-list li:hover {
-  background-color: #f0f0f0;
+.close-button {
+  background-color: #d21e1e;
+  color: white;
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .buttons-group {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  button {
-    font-size: 1rem;
-    padding: 10px 20px;
-  }
-
-  input[type="text"] {
-    width: 90%;
-    font-size: 1rem;
-    padding: 10px;
-  }
-
-  .download-button {
-    font-size: 1rem;
-    padding: 10px 20px;
-  }
-
-  .logo {
-    width: 80px; /* Réduit la taille du logo sur mobile */
-  }
+.close-button:hover {
+  background-color: #a61717;
 }
 
-.footer {
-  margin-top: 50px;
-  text-align: center;
-  font-size: 1rem;
-  color: #6c757d;
+.download-button {
+  background-color: #ffcc00;
+  color: black;
 }
 
+.download-button:hover {
+  background-color: #d4aa00;
+}
 .github-link {
-  color: #007bff;
+  color: #007bff; /* Bleu comme la deuxième image */
   text-decoration: none;
   font-weight: bold;
 }
 
 .github-link:hover {
   text-decoration: underline;
-  color: #0056b3;
+  color: #0056b3; /* Couleur plus sombre au survol */
 }
