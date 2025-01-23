@@ -7,56 +7,68 @@ const App = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState(null);
 
+  // Correspondance entre le territoire sélectionné et l'API
+  const apiMapping = {
+    Départements: 'departements',
+    Communes: 'communes',
+    Epcis: 'epcis',
+  };
+
   useEffect(() => {
+    // Si une recherche est saisie et un territoire est sélectionné
     if (query && territory) {
-      // Simuler une API pour suggestions
-      const data = {
-        Départements: ['Gironde', 'Loire-Atlantique', 'Morbihan'],
-        Communes: ['Nantes', 'Rennes', 'Vannes'],
-        Epcis: ['Métropole de Rennes', 'EPCI Loire', 'EPCI Gironde'],
+      const fetchSuggestions = async () => {
+        try {
+          const response = await fetch(
+            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&limit=5`
+          );
+          const data = await response.json();
+          setSuggestions(data);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des suggestions:', error);
+        }
       };
-      setSuggestions(
-        data[territory].filter((item) =>
-          item.toLowerCase().includes(query.toLowerCase())
-        )
-      );
+
+      fetchSuggestions();
     } else {
       setSuggestions([]);
     }
   }, [query, territory]);
 
-  const handleDownload = () => {
-    if (selected) {
-      // Crée un GeoJSON simulé basé sur la sélection
-      const geojson = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {
-              name: selected,
-              category: territory,
-            },
-            geometry: {
-              type: 'Point',
-              coordinates: [Math.random() * 10, Math.random() * 10], // Coordonnées simulées
-            },
-          },
-        ],
-      };
+  const handleDownload = async () => {
+    if (selected && territory) {
+      try {
+        // URL API spécifique pour chaque territoire
+        const apiUrl = `https://geo.api.gouv.fr/${apiMapping[territory]}/${
+          selected.code
+        }?format=geojson${
+          territory === 'Départements' ? '&geometry=contour' : '&geometry=contour'
+        }`;
 
-      // Convertir l'objet en chaîne JSON
-      const data = JSON.stringify(geojson, null, 2);
+        const response = await fetch(apiUrl);
+        const geojson = await response.json();
 
-      // Créer un blob et un lien de téléchargement
-      const blob = new Blob([data], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${selected}_${territory}.geojson`);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+        // Convertir l'objet en chaîne JSON
+        const data = JSON.stringify(geojson, null, 2);
+
+        // Créer un blob et un lien de téléchargement
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+          'download',
+          `${selected.nom.replace(/\s+/g, '_')}_${territory}.geojson`
+        );
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      } catch (error) {
+        alert(
+          'Erreur lors du téléchargement des données. Veuillez vérifier votre sélection.'
+        );
+        console.error(error);
+      }
     } else {
       alert('Veuillez sélectionner une suggestion avant de télécharger.');
     }
@@ -126,14 +138,14 @@ const App = () => {
               <ul className="suggestions-list">
                 {suggestions.map((item) => (
                   <li
-                    key={item}
+                    key={item.code} // Chaque suggestion doit avoir un identifiant unique
                     onClick={() => {
-                      setSelected(item);
-                      setQuery(item);
-                      setSuggestions([]);
+                      setSelected(item); // Définit la sélection quand on clique
+                      setQuery(item.nom); // Met à jour le champ de recherche avec la valeur sélectionnée
+                      setSuggestions([]); // Vide les suggestions après sélection
                     }}
                   >
-                    {item}
+                    {item.nom}
                   </li>
                 ))}
               </ul>
@@ -156,9 +168,9 @@ const App = () => {
       {/* Footer avec le lien vers GitHub */}
       <footer className="footer">
         <p>
-          Lien vers le{' '}
+          Projet disponible sur{' '}
           <a
-            href="https://github.com/SIGATNguyen/OFTech"
+            href="https://github.com/votre-nom-utilisateur/votre-repo"
             target="_blank"
             rel="noopener noreferrer"
             className="github-link"
