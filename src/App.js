@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import axios from 'axios';
 
 const App = () => {
   const [territory, setTerritory] = useState(null); // Par défaut, aucun territoire sélectionné
@@ -8,63 +7,56 @@ const App = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState(null);
 
-  // Fonction pour récupérer les options de l'API en fonction du territoire
-  const fetchSuggestions = async (territoryType) => {
-    if (territoryType) {
-      try {
-        const apiUrl = `https://geo.api.gouv.fr/${territoryType}`;
-        const response = await axios.get(apiUrl);
-        const data = response.data;
-
-        // Extraire les noms des éléments retournés par l'API
-        const options = data.map((item) => item.nom || item.name || item.libelle);
-        setSuggestions(options);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des suggestions :", error);
-        setSuggestions([]);
-      }
+  useEffect(() => {
+    if (query && territory) {
+      // Simuler une API pour suggestions
+      const data = {
+        Départements: ['Gironde', 'Loire-Atlantique', 'Morbihan'],
+        Communes: ['Nantes', 'Rennes', 'Vannes'],
+        Epcis: ['Métropole de Rennes', 'EPCI Loire', 'EPCI Gironde'],
+      };
+      setSuggestions(
+        data[territory].filter((item) =>
+          item.toLowerCase().includes(query.toLowerCase())
+        )
+      );
+    } else {
+      setSuggestions([]);
     }
-  };
+  }, [query, territory]);
 
-  // Gestion du clic sur les boutons de territoire
-  const handleTerritoryClick = (territoryType) => {
-    setTerritory(territoryType);
-    setQuery(''); // Réinitialise la recherche
-    setSuggestions([]);
-    setSelected(null); // Réinitialise la sélection
-    fetchSuggestions(territoryType); // Recharge les suggestions
-  };
+  const handleDownload = () => {
+    if (selected) {
+      // Crée un GeoJSON simulé basé sur la sélection
+      const geojson = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {
+              name: selected,
+              category: territory,
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [Math.random() * 10, Math.random() * 10], // Coordonnées simulées
+            },
+          },
+        ],
+      };
 
-  // Gestion du téléchargement des contours
-  const handleDownload = async () => {
-    if (selected && territory) {
-      try {
-        const apiUrl = `https://geo.api.gouv.fr/${territory}/${selected}?format=geojson&geometry=contour`;
-        const response = await axios.get(apiUrl);
-        const geojson = response.data;
+      // Convertir l'objet en chaîne JSON
+      const data = JSON.stringify(geojson, null, 2);
 
-        // Vérification si le GeoJSON est correct
-        if (!geojson || geojson.type !== 'FeatureCollection') {
-          alert("Erreur : les contours demandés ne sont pas disponibles.");
-          return;
-        }
-
-        // Convertir l'objet en chaîne JSON
-        const data = JSON.stringify(geojson, null, 2);
-
-        // Créer un blob et un lien de téléchargement
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${selected}_${territory}.geojson`);
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-      } catch (error) {
-        alert("Erreur lors de la récupération des contours. Vérifiez votre connexion ou la validité de votre sélection.");
-        console.error(error);
-      }
+      // Créer un blob et un lien de téléchargement
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${selected}_${territory}.geojson`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
     } else {
       alert('Veuillez sélectionner une suggestion avant de télécharger.');
     }
@@ -77,6 +69,7 @@ const App = () => {
         <img src="/LogoSIG.svg" alt="Logo de la promotion" className="logo" />
       </div>
 
+      {/* Titre principal */}
       <h1>SIGAT OFTech</h1>
       <div className="subtitle">Sélectionner une limite administrative</div>
 
@@ -84,20 +77,35 @@ const App = () => {
       <div className="section">
         <div className="buttons-group">
           <button
-            className={territory === 'departements' ? 'active' : ''}
-            onClick={() => handleTerritoryClick('departements')}
+            className={territory === 'Départements' ? 'active' : ''}
+            onClick={() => {
+              setTerritory('Départements');
+              setQuery('');
+              setSuggestions([]);
+              setSelected(null);
+            }}
           >
             Départements
           </button>
           <button
-            className={territory === 'communes' ? 'active' : ''}
-            onClick={() => handleTerritoryClick('communes')}
+            className={territory === 'Communes' ? 'active' : ''}
+            onClick={() => {
+              setTerritory('Communes');
+              setQuery('');
+              setSuggestions([]);
+              setSelected(null);
+            }}
           >
             Communes
           </button>
           <button
-            className={territory === 'epcis' ? 'active' : ''}
-            onClick={() => handleTerritoryClick('epcis')}
+            className={territory === 'Epcis' ? 'active' : ''}
+            onClick={() => {
+              setTerritory('Epcis');
+              setQuery('');
+              setSuggestions([]);
+              setSelected(null);
+            }}
           >
             Epcis
           </button>
@@ -116,23 +124,23 @@ const App = () => {
             />
             {suggestions.length > 0 ? (
               <ul className="suggestions-list">
-                {suggestions
-                  .filter((item) => item.toLowerCase().includes(query.toLowerCase()))
-                  .map((item) => (
-                    <li
-                      key={item}
-                      onClick={() => {
-                        setSelected(item);
-                        setQuery(item);
-                        setSuggestions([]);
-                      }}
-                    >
-                      {item}
-                    </li>
-                  ))}
+                {suggestions.map((item) => (
+                  <li
+                    key={item}
+                    onClick={() => {
+                      setSelected(item);
+                      setQuery(item);
+                      setSuggestions([]);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
               </ul>
             ) : (
-              query && <div className="no-suggestions">Aucune suggestion trouvée</div>
+              query && (
+                <div className="no-suggestions">Aucune suggestion trouvée</div>
+              )
             )}
           </div>
 
@@ -144,6 +152,21 @@ const App = () => {
           </div>
         </>
       )}
+
+      {/* Footer avec le lien vers GitHub */}
+      <footer className="footer">
+        <p>
+          Lien vers le{' '}
+          <a
+            href="https://github.com/SIGATNguyen/OFTech"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="github-link"
+          >
+            GitHub
+          </a>
+        </p>
+      </footer>
     </div>
   );
 };
