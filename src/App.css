@@ -1,9 +1,10 @@
-/* Import de la police Roboto */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+/* Merriweather+Sans */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;700&display=swap');
+
 
 /* Style global */
 body {
-  font-family: 'Roboto', Arial, sans-serif;
+  font-family: 'Merriweather+Sans', Arial, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f9f9f9;
@@ -207,4 +208,11 @@ input[type='text'] {
 .github-link:hover {
   text-decoration: underline;
   color: #0056b3; /* Couleur plus sombre au survol */
+}
+.map-container {
+  height: 400px;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
 }
