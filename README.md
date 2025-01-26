@@ -1,20 +1,32 @@
 # **SIGAT OFTech**
 
-## **Description du projet**
+SIGAT OFTech est une application web permettant d’accéder aux données géographiques administratives en France. Elle offre un outil simple pour **rechercher**, **visualiser** et **télécharger** des contours géographiques au format GeoJSON, utilisables dans des logiciels SIG comme QGIS.
 
-SIGAT OFTech est un projet visant à fournir un outil simple et efficace pour accéder aux données géographiques administratives en France. Grâce à une interface intuitive, les utilisateurs peuvent :
+---
 
-- **Rechercher** des Départements, Communes ou EPCI par leur nom.
-- **Télécharger** les contours géographiques correspondants au format GeoJSON pour une utilisation directe dans des outils de SIG (Systèmes d'Information Géographique) tels que QGIS.
+## **Fonctionnalités principales**
 
-⚠ **Limitation :**  
-Les contours géographiques pour les départements ne sont pas disponibles via l'API utilisée. Cette fonctionnalité est donc indisponible pour les départements.
-Idem pour la région
+- **Recherche intuitive :** Recherchez des communes, EPCI, etc., avec tri priorisant les grandes villes (ex. : Bordeaux avant Boë).
+- **Carte interactive :** Visualisez les limites administratives sélectionnées avec un fond de carte **Positron Retina**.
+- **Téléchargement des données :** Téléchargez les contours GeoJSON et prévisualisez les données brutes avant téléchargement.
 
-...
+⚠ **Limitation :** Les contours des départements et régions ne sont pas encore disponibles.
+
+---
 
 ## **Technologies utilisées**
 
-- **React.js** : pour la construction de l'interface utilisateur.
-- **API Géo** : pour l'accès aux données géographiques.
-- **CSS** : pour le design et la mise en page.
+- **React.js** : Interface utilisateur.
+- **Leaflet.js** : Cartographie interactive.
+- **GeoAPI Gouv** : Source des données géographiques.
+- **CARTO (Positron Retina)** : Fond de carte.
+- **CSS** : Design.
+- **Vercel** : Hébergement.
+
+---
+
+## **Sources**
+
+- [Documentation API Geo Gouv](https://geo.api.gouv.fr/decoupage-administratif)  
+- [GitHub du projet](https://github.com/SIGATNguyen/OFTech)
+
