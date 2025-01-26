@@ -19,7 +19,7 @@ const App = () => {
       const fetchSuggestions = async () => {
         try {
           const response = await fetch(
-            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&limit=5`
+            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&limit=5&boost=population`
           );
           const data = await response.json();
           setSuggestions(data);
