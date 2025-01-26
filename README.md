@@ -6,7 +6,7 @@ SIGAT OFTech est une application web permettant d’accéder aux données géogr
 
 ## **Fonctionnalités principales**
 
-- **Recherche intuitive :** Recherchez des communes, EPCI, etc., avec tri priorisant les grandes villes (ex. : Bordeaux avant Boë).
+- **Recherche intuitive :** Recherchez des communes, EPCI, etc., avec tri priorisant les grandes villes (ex. : Bordeaux avant Boz).
 - **Carte interactive :** Visualisez les limites administratives sélectionnées avec un fond de carte **Positron Retina**.
 - **Téléchargement des données :** Téléchargez les contours GeoJSON et prévisualisez les données brutes avant téléchargement.
 
