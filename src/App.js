@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import "./App.css";
 
 const App = () => {
@@ -6,8 +8,11 @@ const App = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [geojsonData, setGeojsonData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const mapRef = React.useRef(null);
+  const geojsonLayerRef = React.useRef(null);
 
   const apiMapping = {
     Communes: "communes",
@@ -15,11 +20,24 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (!mapRef.current) {
+      mapRef.current = L.map("map").setView([46.85, 2.35], 6);
+      L.tileLayer(
+        "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
+        {
+          attribution:
+            'Map tiles by <a href="https://carto.com/">CARTO</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="https://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.',
+        }
+      ).addTo(mapRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
     if (query && territory) {
       const fetchSuggestions = async () => {
         try {
           const response = await fetch(
-            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&limit=5&boost=population`
+            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&boost=population&limit=5`
           );
           const data = await response.json();
           setSuggestions(data);
@@ -34,21 +52,50 @@ const App = () => {
     }
   }, [query, territory]);
 
+  const handleHover = async (item) => {
+    if (item && territory) {
+      try {
+        const apiUrl = `https://geo.api.gouv.fr/${apiMapping[territory]}/${item.code}?format=geojson&geometry=contour`;
+        const response = await fetch(apiUrl);
+        const geojson = await response.json();
+
+        if (geojsonLayerRef.current) {
+          mapRef.current.removeLayer(geojsonLayerRef.current);
+        }
+
+        const newLayer = L.geoJSON(geojson, {
+          style: {
+            color: "#ffcc00",
+            weight: 2,
+          },
+        }).addTo(mapRef.current);
+
+        geojsonLayerRef.current = newLayer;
+
+        const bounds = newLayer.getBounds();
+        mapRef.current.fitBounds(bounds);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données:", error);
+      }
+    }
+  };
+
+  const handleSelect = (item) => {
+    setSelected(item);
+    setQuery(item.nom);
+    setSuggestions([]); // Fermer la liste déroulante après sélection
+  };
+
   const handleValidate = async () => {
     if (selected && territory) {
       try {
-        const apiUrl = `https://geo.api.gouv.fr/${apiMapping[territory]}/${
-          selected.code
-        }?format=geojson&geometry=contour`;
-
+        const apiUrl = `https://geo.api.gouv.fr/${apiMapping[territory]}/${selected.code}?format=geojson&geometry=contour`;
         const response = await fetch(apiUrl);
         const geojson = await response.json();
         setGeojsonData(geojson);
         setIsModalOpen(true);
       } catch (error) {
-        alert(
-          "Erreur lors de la récupération des données. Veuillez vérifier votre sélection."
-        );
+        alert("Erreur lors de la récupération des données. Veuillez vérifier votre sélection.");
         console.error(error);
       }
     } else {
@@ -69,9 +116,7 @@ const App = () => {
       );
       document.body.appendChild(link);
       link.click();
-      link.parentNode.removeChild(link);
-
-      // Fermer le pop-up après le téléchargement
+      document.body.removeChild(link);
       setIsModalOpen(false);
     }
   };
@@ -92,6 +137,7 @@ const App = () => {
               setQuery("");
               setSuggestions([]);
               setSelected(null);
+              setGeojsonData(null);
             }}
           >
             Communes
@@ -103,6 +149,7 @@ const App = () => {
               setQuery("");
               setSuggestions([]);
               setSelected(null);
+              setGeojsonData(null);
             }}
           >
             Epcis
@@ -118,23 +165,18 @@ const App = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            {suggestions.length > 0 ? (
+            {suggestions.length > 0 && (
               <ul className="suggestions-list">
                 {suggestions.map((item) => (
                   <li
                     key={item.code}
-                    onClick={() => {
-                      setSelected(item);
-                      setQuery(item.nom);
-                      setSuggestions([]);
-                    }}
+                    onMouseEnter={() => handleHover(item)}
+                    onClick={() => handleSelect(item)}
                   >
                     {item.nom}
                   </li>
                 ))}
               </ul>
-            ) : (
-              query && <div className="no-suggestions">Aucune suggestion trouvée</div>
             )}
           </div>
           <div className="section">
@@ -144,7 +186,8 @@ const App = () => {
           </div>
         </>
       )}
-      {isModalOpen && geojsonData && (
+      <div id="map" className="map-container"></div>
+      {isModalOpen && (
         <div className="overlay">
           <div className="modal">
             <h3>Données GeoJSON :</h3>
