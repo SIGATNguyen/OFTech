@@ -1,218 +1,325 @@
 /* Merriweather+Sans */
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;700&display=swap');
 
+/* Variables de couleurs pour le mode clair par défaut */
+:root {
+  --bg-color: #e8edf2;           /* Fond général (gris bleuté doux) */
+  --container-bg: #ffffff;       /* Fond du conteneur principal */
+  --text-color: #333333;
+  --accent-color: #d21e1e;
+  --button-bg: #e0e0e0;
+  --button-hover-bg: #cfcfcf;
+  --input-border: #e0e0e0;
+  --footer-bg: #f3f3f3;
+  --footer-border: #e0e0e0;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.6);
+}
 
-/* Style global */
+/* Variables pour le dark mode (activées en ajoutant la classe "dark" sur <body>) */
+body.dark {
+  --bg-color: #121212;
+  --container-bg: #1e1e1e;
+  --text-color: #e0e0e0;
+  --accent-color: #ff5722;
+  --button-bg: #333333;
+  --button-hover-bg: #444444;
+  --input-border: #444444;
+  --footer-bg: #1e1e1e;
+  --footer-border: #333333;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.8);
+}
+
+/* Appliquer un filtre sur le logo en mode sombre */
+body.dark .logo {
+  filter: invert(1) brightness(1.5);
+}
+
+/* Règles globales */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: 'Merriweather+Sans', Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9;
+  background: var(--bg-color);
+  font-family: 'Merriweather Sans', sans-serif;
+  color: var(--text-color);
 }
 
+/* Conteneur principal en deux colonnes */
 .container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
+  max-width: 1200px;
+  margin: 40px auto;
+  background: var(--container-bg);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 20px;
 }
 
+/* Colonne de gauche (contenu) */
+.left-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Colonne de droite (carte) */
+.right-column {
+  flex: 1;
+}
+
+/* Logo */
 .logo-container {
   text-align: left;
   margin-bottom: 20px;
 }
 
 .logo {
-  width: 180px;
+  max-width: 200px;
 }
 
+/* Titres et sous-titres */
 h1 {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #343a40;
   margin-bottom: 10px;
+  color: var(--text-color);
 }
 
 .subtitle {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 400;
-  color: #6c757d;
   margin-bottom: 30px;
+  color: var(--text-color);
 }
 
+/* Sections */
 .section {
   margin-bottom: 30px;
 }
 
+/* Boutons */
 .buttons-group {
   display: flex;
   justify-content: center;
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 button {
-  font-size: 1.2rem;
   padding: 15px 30px;
+  border: none;
   border-radius: 8px;
-  border: 2px solid #ffcc00;
-  background-color: white;
-  color: #343a40;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s, transform 0.2s;
+  background: var(--button-bg);
+  color: var(--text-color);
 }
 
 button:hover {
-  background-color: #ffcc00;
-  color: white;
+  background: var(--button-hover-bg);
+  transform: translateY(-2px);
 }
 
 button.active {
-  background-color: #d21e1e;
-  color: white;
-  border: none;
+  background: var(--accent-color);
+  color: #fff;
 }
 
-input[type='text'] {
-  width: 80%;
-  font-size: 1.5rem;
+/* Input de recherche */
+input[type="text"] {
+  width: 100%;
   padding: 15px;
-  border: 2px solid #ccc;
+  font-size: 1rem;
+  border: 2px solid var(--input-border);
   border-radius: 8px;
-  margin-top: 20px;
+  transition: border-color 0.3s;
+  background: var(--container-bg);
+  color: var(--text-color);
 }
 
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Liste des suggestions */
 .suggestions-list {
   list-style: none;
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   padding: 0;
+  border: 2px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--container-bg);
   max-height: 200px;
   overflow-y: auto;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: white;
   text-align: left;
 }
 
 .suggestions-list li {
-  padding: 15px 20px;
-  font-size: 1.2rem;
+  padding: 15px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s;
 }
 
 .suggestions-list li:hover {
-  background-color: #f0f0f0;
+  background: var(--button-hover-bg);
 }
 
-.no-suggestions {
-  margin-top: 10px;
-  font-size: 1.2rem;
-  color: #888;
-}
-
+/* Bouton de validation */
 .validate-button {
-  font-size: 1.5rem;
-  padding: 15px 30px;
-  background-color: #ffcc00;
-  color: #343a40;
-  font-weight: 700;
+  width: 100%;
+  padding: 15px;
+  background: #ffcc00;
+  color: var(--text-color);
+  font-size: 1.1rem;
   border: none;
   border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s;
 }
 
 .validate-button:hover {
-  background-color: #d4aa00;
+  background: #e6b800;
 }
 
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 600px;
-  width: 90%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-  text-align: center;
+/* Carte */
+.map-container {
+  height: 700px; /* Modifier cette valeur pour agrandir la hauteur de la carte */
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--input-border);
 }
 
+/* Modal et overlay */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background: var(--modal-overlay-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
 
+.modal {
+  background: var(--container-bg);
+  color: var(--text-color);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+/* Override dark mode pour la modal */
+body.dark .modal {
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+/* Affichage des données GeoJSON */
 .geojson-data {
   background: #f8f9fa;
-  padding: 10px;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   max-height: 300px;
   overflow-y: auto;
   font-family: monospace;
-  white-space: pre-wrap;
   text-align: left;
+  margin-top: 15px;
 }
 
+/* Override dark mode pour la zone GeoJSON */
+body.dark .geojson-data {
+  background: #2e2e2e;
+  border-color: #444444;
+  color: var(--text-color);
+}
+
+/* Boutons de la modal */
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .close-button,
 .download-button {
-  width: 120px;
-  padding: 10px;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 12px 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
 .close-button {
-  background-color: #d21e1e;
-  color: white;
+  background: var(--accent-color);
+  color: #fff;
 }
 
 .close-button:hover {
-  background-color: #a61717;
+  background: #b81b1b;
 }
 
 .download-button {
-  background-color: #ffcc00;
-  color: black;
+  background: #ffcc00;
+  color: var(--text-color);
 }
 
 .download-button:hover {
-  background-color: #d4aa00;
+  background: #e6b800;
 }
+
+/* Footer */
+.footer {
+  margin-top: 30px;
+  padding: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: var(--footer-bg);
+  border-top: 1px solid var(--footer-border);
+  border-radius: 0 0 12px 12px;
+}
+
 .github-link {
-  color: #007bff; /* Bleu comme la deuxième image */
+  color: #007bff;
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .github-link:hover {
   text-decoration: underline;
-  color: #0056b3; /* Couleur plus sombre au survol */
+  color: #0056b3;
 }
-.map-container {
-  height: 400px;
-  margin-top: 20px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
+
+/* Bouton dark mode / light mode fixé */
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Media query pour mobile */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
 }
