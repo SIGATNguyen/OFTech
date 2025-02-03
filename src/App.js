@@ -10,6 +10,7 @@ const App = () => {
   const [selected, setSelected] = useState(null);
   const [geojsonData, setGeojsonData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isItemSelected, setIsItemSelected] = useState(false);
 
   const mapRef = React.useRef(null);
   const geojsonLayerRef = React.useRef(null);
@@ -19,21 +20,20 @@ const App = () => {
     Epcis: "epcis",
   };
 
+  // Initialisation de la carte Leaflet
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map("map").setView([46.85, 2.35], 6);
-      L.tileLayer(
-        "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png",
-        {
-          attribution:
-            'Map tiles by <a href="https://carto.com/">CARTO</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="https://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.',
-        }
-      ).addTo(mapRef.current);
+      L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
+        attribution:
+          'Map tiles by <a href="https://carto.com/">CARTO</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="https://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.',
+      }).addTo(mapRef.current);
     }
   }, []);
 
+  // Récupération des suggestions uniquement si l'utilisateur n'a pas sélectionné d'item
   useEffect(() => {
-    if (query && territory) {
+    if (query && territory && !isItemSelected) {
       const fetchSuggestions = async () => {
         try {
           const response = await fetch(
@@ -50,8 +50,9 @@ const App = () => {
     } else {
       setSuggestions([]);
     }
-  }, [query, territory]);
+  }, [query, territory, isItemSelected]);
 
+  // Affichage d'un aperçu sur la carte lors du survol d'une suggestion
   const handleHover = async (item) => {
     if (item && territory) {
       try {
@@ -64,26 +65,23 @@ const App = () => {
         }
 
         const newLayer = L.geoJSON(geojson, {
-          style: {
-            color: "#ffcc00",
-            weight: 2,
-          },
+          style: { color: "#ffcc00", weight: 2 },
         }).addTo(mapRef.current);
 
         geojsonLayerRef.current = newLayer;
-
-        const bounds = newLayer.getBounds();
-        mapRef.current.fitBounds(bounds);
+        mapRef.current.fitBounds(newLayer.getBounds());
       } catch (error) {
         console.error("Erreur lors du chargement des données:", error);
       }
     }
   };
 
+  // Sélection d'un item via onMouseDown
   const handleSelect = (item) => {
     setSelected(item);
     setQuery(item.nom);
-    setSuggestions([]); // Fermer la liste déroulante après sélection
+    setIsItemSelected(true);
+    setSuggestions([]); // Ferme la liste après sélection
   };
 
   const handleValidate = async () => {
@@ -110,10 +108,7 @@ const App = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute(
-        "download",
-        `${selected.nom.replace(/\s+/g, "_")}_${territory}.geojson`
-      );
+      link.setAttribute("download", `${selected.nom.replace(/\s+/g, "_")}_${territory}.geojson`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -138,6 +133,7 @@ const App = () => {
               setSuggestions([]);
               setSelected(null);
               setGeojsonData(null);
+              setIsItemSelected(false);
             }}
           >
             Communes
@@ -150,6 +146,7 @@ const App = () => {
               setSuggestions([]);
               setSelected(null);
               setGeojsonData(null);
+              setIsItemSelected(false);
             }}
           >
             Epcis
@@ -163,7 +160,10 @@ const App = () => {
               type="text"
               placeholder={`Rechercher ${territory.toLowerCase()}`}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setIsItemSelected(false);
+              }}
             />
             {suggestions.length > 0 && (
               <ul className="suggestions-list">
@@ -171,7 +171,7 @@ const App = () => {
                   <li
                     key={item.code}
                     onMouseEnter={() => handleHover(item)}
-                    onClick={() => handleSelect(item)}
+                    onMouseDown={() => handleSelect(item)}
                   >
                     {item.nom}
                   </li>
@@ -191,9 +191,7 @@ const App = () => {
         <div className="overlay">
           <div className="modal">
             <h3>Données GeoJSON :</h3>
-            <pre className="geojson-data">
-              {JSON.stringify(geojsonData, null, 2)}
-            </pre>
+            <pre className="geojson-data">{JSON.stringify(geojsonData, null, 2)}</pre>
             <div className="modal-buttons">
               <button className="close-button" onClick={() => setIsModalOpen(false)}>
                 Fermer
