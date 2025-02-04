@@ -1,9 +1,9 @@
 /* Merriweather+Sans */
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;700&display=swap');
 
-/* Variables de couleurs pour le mode clair par défaut */
+/* couleurs pour le mode clair (dft) */
 :root {
-  --bg-color: #e8edf2;           /* Fond général (gris bleuté doux) */
+  --bg-color: #e8edf2;           /* Fond général */
   --container-bg: #ffffff;       /* Fond du conteneur principal */
   --text-color: #333333;
   --accent-color: #d21e1e;
@@ -15,7 +15,7 @@
   --modal-overlay-bg: rgba(0, 0, 0, 0.6);
 }
 
-/* Variables pour le dark mode (activées en ajoutant la classe "dark" sur <body>) */
+/* couleur pour le dark mode (activées en ajoutant la classe "dark" sur <body>) */
 body.dark {
   --bg-color: #121212;
   --container-bg: #1e1e1e;
@@ -29,7 +29,7 @@ body.dark {
   --modal-overlay-bg: rgba(0, 0, 0, 0.8);
 }
 
-/* Appliquer un filtre sur le logo en mode sombre */
+/* Appliquer un filtre sur le logo en mode sombre #### Problème avec logo Ouest-France créer un body.dark .logoOF ?*/ 
 body.dark .logo {
   filter: invert(1) brightness(1.5);
 }
@@ -47,9 +47,9 @@ body {
   color: var(--text-color);
 }
 
-/* Conteneur principal en deux colonnes */
+/* Conteneur principal en trois colonnes */
 .container {
-  max-width: 1200px;
+  max-width: 1850px;
   margin: 40px auto;
   background: var(--container-bg);
   border-radius: 12px;
@@ -59,7 +59,7 @@ body {
   gap: 20px;
 }
 
-/* Colonne de gauche (contenu) */
+/* Colonne de gauche (menu) */
 .left-column {
   flex: 1;
   display: flex;
@@ -67,9 +67,41 @@ body {
   justify-content: flex-start;
 }
 
+/* Colonne du milieu (indicateurs) */
+.middle-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Groupe de boutons indicateurs */
+.indicators-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.indicator-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--button-bg);
+  color: var(--text-color);
+  transition: background 0.3s;
+}
+
+.indicator-button:hover {
+  background: var(--button-hover-bg);
+}
+
 /* Colonne de droite (carte) */
 .right-column {
-  flex: 1;
+  flex: 2;
 }
 
 /* Logo */
@@ -132,7 +164,7 @@ button.active {
   color: #fff;
 }
 
-/* Input de recherche */
+/* Input de la barre de recherche */
 input[type="text"] {
   width: 100%;
   padding: 15px;
@@ -178,7 +210,7 @@ input[type="text"]:focus {
   width: 100%;
   padding: 15px;
   background: #ffcc00;
-  color: var(--text-color);
+  color: #333333;
   font-size: 1.1rem;
   border: none;
   border-radius: 8px;
@@ -193,13 +225,13 @@ input[type="text"]:focus {
 
 /* Carte */
 .map-container {
-  height: 700px; /* Modifier cette valeur pour agrandir la hauteur de la carte */
+  height: 700px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid var(--input-border);
 }
 
-/* Modal et overlay */
+/* Modal = popup en gros et overlay */
 .overlay {
   position: fixed;
   top: 0;
@@ -224,7 +256,7 @@ input[type="text"]:focus {
   text-align: center;
 }
 
-/* Override dark mode pour la modal */
+/* Override (quand on passe la souris) dark mode pour la modal */
 body.dark .modal {
   background: #1e1e1e;
   color: #e0e0e0;
@@ -287,7 +319,7 @@ body.dark .geojson-data {
   background: #e6b800;
 }
 
-/* Footer */
+/* Footer (c'est pour le github footer c'est que le bas)*/
 .footer {
   margin-top: 30px;
   padding: 20px;
@@ -309,7 +341,7 @@ body.dark .geojson-data {
   color: #0056b3;
 }
 
-/* Bouton dark mode / light mode fixé */
+/* Bouton dark mode fixé */
 .mode-toggle {
   position: fixed;
   top: 20px;
@@ -317,7 +349,7 @@ body.dark .geojson-data {
   z-index: 1000;
 }
 
-/* Media query pour mobile */
+/* Media query pour mobile (s'adapter la diminution de la fenetre)*/
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
