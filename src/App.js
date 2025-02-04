@@ -7,7 +7,7 @@ const App = () => {
   // État pour le dark mode
   const [darkMode, setDarkMode] = useState(false);
 
-  // Autres états de l'application
+  // Autres états
   const [territory, setTerritory] = useState(null);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -16,9 +16,9 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isItemSelected, setIsItemSelected] = useState(false);
 
-  // Références pour la carte et ses couches
+  // pour la carte & les couches
   const mapRef = useRef(null);
-  const tileLayerRef = useRef(null); // Référence pour la couche de tuiles
+  const tileLayerRef = useRef(null);
   const geojsonLayerRef = useRef(null);
 
   const apiMapping = {
@@ -26,7 +26,7 @@ const App = () => {
     Epcis: "epcis",
   };
 
-  // Ajoute ou retire la classe "dark" sur le <body>
+  // Mise à jour de la classe "dark" sur le "body"
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add("dark");
@@ -35,11 +35,11 @@ const App = () => {
     }
   }, [darkMode]);
 
-  // Initialisation de la carte
+  // Init la carte
   useEffect(() => {
     if (!mapRef.current) {
       mapRef.current = L.map("map").setView([46.85, 2.35], 6);
-      // Ajout du tile layer en fonction de darkMode
+      // Ajout du tile layer selon le mode (dark et light)
       tileLayerRef.current = L.tileLayer(
         darkMode
           ? "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"
@@ -50,14 +50,12 @@ const App = () => {
         }
       ).addTo(mapRef.current);
     }
-  }, []); // S'exécute une seule fois à l'initialisation
+  }, []);
 
-  // Met à jour la couche de tuiles lorsque darkMode change
+  // MAJ du tile en dark mode
   useEffect(() => {
     if (mapRef.current && tileLayerRef.current) {
-      // Retirer l'ancienne couche
       mapRef.current.removeLayer(tileLayerRef.current);
-      // Ajouter la nouvelle couche en fonction du mode actuel
       tileLayerRef.current = L.tileLayer(
         darkMode
           ? "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"
@@ -70,13 +68,13 @@ const App = () => {
     }
   }, [darkMode]);
 
-  // Récupération des suggestions uniquement si aucun élément n'est sélectionné
+  // Récup des suggestions 3max + boost pop
   useEffect(() => {
     if (query && territory && !isItemSelected) {
       const fetchSuggestions = async () => {
         try {
           const response = await fetch(
-            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&boost=population&limit=5`
+            `https://geo.api.gouv.fr/${apiMapping[territory]}?nom=${query}&boost=population&limit=3` // boost=pop pour classer par pop.
           );
           const data = await response.json();
           setSuggestions(data);
@@ -90,7 +88,7 @@ const App = () => {
     }
   }, [query, territory, isItemSelected]);
 
-  // Affichage d'un aperçu sur la carte lors du survol d'une suggestion
+  // Affichage sur la carte lors du survol d'une suggestion
   const handleHover = async (item) => {
     if (item && territory) {
       try {
@@ -98,11 +96,9 @@ const App = () => {
         const response = await fetch(apiUrl);
         const geojson = await response.json();
 
-        // Retirer l'ancienne couche GeoJSON si elle existe
         if (geojsonLayerRef.current) {
           mapRef.current.removeLayer(geojsonLayerRef.current);
         }
-        // Ajouter la nouvelle couche GeoJSON
         const newLayer = L.geoJSON(geojson, {
           style: { color: "#ffcc00", weight: 2 },
         }).addTo(mapRef.current);
@@ -114,7 +110,7 @@ const App = () => {
     }
   };
 
-  // Sélection d'une suggestion (avec onMouseDown pour éviter la perte de focus)
+  // Sélection d'une suggestion (#Problème réglé avec IsItemSelected)
   const handleSelect = (item) => {
     setSelected(item);
     setQuery(item.nom);
@@ -122,6 +118,7 @@ const App = () => {
     setIsItemSelected(true);
   };
 
+  // Validation de la sélection et affichage de la modal = popup en gros
   const handleValidate = async () => {
     if (selected && territory) {
       try {
@@ -156,7 +153,7 @@ const App = () => {
 
   return (
     <>
-      {/* Bouton dark mode fixé en haut à droite */}
+      {/* Bouton dark mode fixé */}
       <header className="menu">
         <div className="menu-content">
           <button className="mode-toggle" onClick={() => setDarkMode(!darkMode)}>
@@ -165,12 +162,13 @@ const App = () => {
         </div>
       </header>
 
-      {/* Conteneur principal en deux colonnes */}
+      {/* Zone principale en trois colonnes */}
       <div className="container">
-        {/* Colonne de gauche : contenu */}
+        {/* Colonne de gauche : "Menu" */}
         <div className="left-column">
           <div className="logo-container">
             <img src="/LogoSIG.svg" alt="Logo de la promotion" className="logo" />
+            <img src="/OF.svg" alt="Logo de OF" className="logo" />
           </div>
           <h1>SIGAT OFTech</h1>
           <div className="subtitle">Sélectionner une limite administrative</div>
@@ -237,28 +235,42 @@ const App = () => {
               </div>
             </>
           )}
-          <footer className="footer">
-            <p>
-              Projet disponible sur{" "}
-              <a
-                href="https://github.com/SIGATNguyen/OFTech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="github-link"
-              >
-                GitHub
-              </a>
-            </p>
-          </footer>
         </div>
 
-        {/* Colonne de droite : carte */}
+        {/* Colonne du milieu : "indicateurs" */}
+        <div className="middle-column">
+          <h2>Indicateurs</h2>
+          <div className="indicators-buttons-group">
+            <button className="indicator-button">Variation de population</button>
+            <button className="indicator-button">Taux de chômage</button>
+            <button className="indicator-button">Prix de l'immobilier</button>
+            <button className="indicator-button">Prix de l'immobilier</button>
+            <button className="indicator-button">Prix de l'immobilier</button>
+          </div>
+        </div>
+
+        {/* Colonne de droite : "carte" */}
         <div className="right-column">
           <div id="map" className="map-container"></div>
         </div>
       </div>
 
-      {/* Modal d'affichage des données GeoJSON */}
+      {/* Footer en bas, hors container */}
+      <footer className="footer">
+        <p>
+          Projet disponible sur{" "}
+          <a
+            href="https://github.com/SIGATNguyen/OFTech"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="github-link"
+          >
+            GitHub
+          </a>
+        </p>
+      </footer>
+
+      {/* Modal - affichage des données en GeoJSON */}
       {isModalOpen && (
         <div className="overlay">
           <div className="modal">
