@@ -1,32 +1,51 @@
-# **SIGAT OFTech**
+# OFTech SIGAT
 
-SIGAT OFTech est une application web permettant d’accéder aux données géographiques administratives en France. Elle offre un outil simple pour **rechercher**, **visualiser** et **télécharger** des contours géographiques au format GeoJSON, utilisables dans des logiciels SIG comme QGIS.
+OFTech SIGAT est une application web interactive permettant de **télécharger** et **visualiser** des données géographiques issues de l'API [geo.api.gouv.fr](https://geo.api.gouv.fr).  
+Elle offre la possibilité de rechercher et de sélectionner des entités administratives (communes, EPCI, IRIS) pour les afficher sur une carte interactive et les exporter sous forme de fichier GeoJSON.
 
----
+## Fonctionnalités
 
-## **Fonctionnalités principales**
+- **Recherche et sélection**  
+  - Recherchez des communes, EPCI ou IRIS via un champ de recherche (avec suggestions en temps réel, limitées à 4 résultats et boostées par la population).
+  - Sélection multiple d'entités pour les visualiser ensemble.
 
-- **Recherche intuitive :** Recherchez des communes, EPCI, etc., avec tri priorisant les grandes villes (ex. : Bordeaux avant Boz).
-- **Carte interactive :** Visualisez les limites administratives sélectionnées avec un fond de carte **Positron Retina**.
-- **Téléchargement des données :** Téléchargez les contours GeoJSON et prévisualisez les données brutes avant téléchargement.
+- **Visualisation SIG**  
+  - Affichage des entités sélectionnées sur une carte interactive (Leaflet).
+  - Zoom automatique pour voir l'ensemble des entités.
 
-⚠ **Limitation :** Les contours des départements et régions ne sont pas encore disponibles.
+- **Téléchargement de données**  
+  - Combinez toutes les entités sélectionnées en un unique fichier GeoJSON.
+  - Téléchargez facilement ce fichier pour l'utiliser dans d'autres outils SIG.
 
----
+- **Gestion de la sélection**  
+  - Un compteur affiche le nombre d'entités sélectionnées.
+  - Une modal « Voir la sélection » permet de consulter et de retirer des éléments de la sélection.
 
-## **Technologies utilisées**
+- **Drag & Drop (fonctionnalité en cours de développement)**  
+  - Déposez un fichier GeoJSON dans la zone dédiée.
+  - (Idée future) Conversion du GeoJSON en un fichier ZIP contenant les shapefiles correspondants.
 
-- **React.js** : Interface utilisateur.
-- **Leaflet.js** : Cartographie interactive.
-- **GeoAPI Gouv** : Source des données géographiques.
-- **CARTO (Positron Retina)** : Fond de carte.
-- **CSS** : Design.
-- **Vercel** : Hébergement.
+## Comment ça fonctionne ?
 
----
+1. **Sélectionnez le type d'entité** (Communes, EPCI ou IRIS) en cliquant sur l'un des trois boutons.
+2. **Recherchez** votre entité en tapant dans le champ de recherche.
+3. **Sélectionnez** une entité parmi les suggestions qui s'affichent.
+4. **Visualisez** l'entité (ou les entités sélectionnées) sur la carte.
+5. **Téléchargez** le GeoJSON combiné en cliquant sur le bouton "télécharger".
+6. (Optionnel) Déposez un fichier GeoJSON via la zone Drag & Drop pour une transformation ultérieure.
 
-## **Sources**
+## Technologies utilisées
 
-- [Documentation API Geo Gouv](https://geo.api.gouv.fr/decoupage-administratif)  
-- [GitHub du projet](https://github.com/SIGATNguyen/OFTech)
+- **React** pour l'interface utilisateur.
+- **Leaflet** pour l'affichage de la carte.
+- **HTML5 & CSS3** pour la mise en page responsive et moderne.
+- **API geo.api.gouv.fr** pour l'accès aux données géographiques.
+- **(Optionnel) shp-write** (pour une future conversion GeoJSON → ZIP shapefile).
 
+## Installation
+
+1. Clonez ce dépôt :
+
+   ```bash
+   git clone https://github.com/SIGATNguyen/OFTech.git
+   cd OFTech
