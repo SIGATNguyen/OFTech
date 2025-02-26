@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import L from "leaflet";
+import * as d3 from "d3"; // Pour le parsing du CSV
 import "leaflet/dist/leaflet.css";
 import "./App.css";
 
@@ -126,7 +127,31 @@ const App = () => {
     }
   };
 
-  // Télécharger
+  // Jointure des données socio-éco
+  const handleJoinSocioEco = async () => {
+    // URL du CSV socio-éco, à adapter à votre contexte
+    const csvURL = "https://exemple.com/path/to/socioeco.csv";
+    try {
+      // On suppose que le CSV contient des colonnes "code" et "population_variation"
+      const csvData = await d3.csv(csvURL);
+      const updatedGeojsons = selectedGeojsons.map((item) => {
+        // Clonage de l'objet GeoJSON pour éviter la mutation directe
+        const updatedData = { ...item.data };
+        updatedData.features = updatedData.features.map((feature) => {
+          const code = feature.properties.code;
+          const socioRow = csvData.find((row) => row.code === code);
+          feature.properties.population_variation = socioRow ? socioRow.population_variation : null;
+          return feature;
+        });
+        return { ...item, data: updatedData };
+      });
+      setSelectedGeojsons(updatedGeojsons);
+    } catch (error) {
+      console.error("Erreur lors du chargement des données socio-éco:", error);
+    }
+  };
+
+  // Télécharger la sélection
   const handleDownload = () => {
     if (selectedGeojsons.length === 0) {
       alert("Aucune entité sélectionnée.");
@@ -241,10 +266,11 @@ const App = () => {
           </div>
 
           <div className="indicators">
-            <button>Variation de population</button>
-            <button>Variation de population</button>
-            <button>Variation de population</button>
-            <button>Variation de population</button>
+            {/* En cliquant sur ce bouton, on joint le CSV socio-éco aux entités sélectionnées */}
+            <button onClick={handleJoinSocioEco}>Variation de population</button>
+            <button>Autre critère</button>
+            <button>Autre critère</button>
+            <button>Autre critère</button>
           </div>
 
           <div className="bottom-row">
@@ -254,7 +280,7 @@ const App = () => {
               Nombre de sélection : {selectedItems.length}
             </span>
             <button onClick={handleDownload} className="download-btn">
-              télécharger
+              Télécharger
             </button>
           </div>
 
